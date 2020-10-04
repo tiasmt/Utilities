@@ -29,21 +29,27 @@ namespace Utilities
                 newUser.Username = Console.ReadLine();
                 Console.WriteLine("Please insert your password: ");
                 var password = Console.ReadLine();
-                Console.WriteLine("Please confirm your password: ");
-                if (password == Console.ReadLine())
+                if(Validate(newUser))
                 {
                     HashPassword(newUser, password);
                     isInputValid = true;
                 }
-                else
-                {
-                    Console.WriteLine("Passwords do not match!");
-                    Console.ReadLine();
-                }
+                
             } while (!isInputValid);
 
             return newUser;
-            
+        }
+
+        private bool Validate(User user)
+        {
+            var existingUser = _userRepository.GetUserByUsername(user.Username);
+            if(existingUser != null)
+            {
+                System.Console.WriteLine($"Username {user.Username} is not available");
+                Console.ReadLine();
+                return false;
+            }
+            return true;
         }
 
         private User HashPassword(User user, string password)
