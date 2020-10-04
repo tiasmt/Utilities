@@ -13,8 +13,16 @@ namespace Utilities
 
         public bool Process()
         {
+            return true;
+        }
 
-            return false;
+        public void RequestUsernameAndPassword()
+        {
+            var currentUser = new User();
+            System.Console.WriteLine("Username: ");
+            currentUser.Username = Console.ReadLine();
+            System.Console.WriteLine("Password: ");
+            var password = Console.ReadLine();
         }
     }
 }
