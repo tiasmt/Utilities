@@ -29,7 +29,7 @@ namespace Utilities
                 using (var reader = new StreamReader(Path))
                 using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
                 {
-                    var records = csv.GetRecords<User>();
+                    var records = csv.GetRecords<User>().ToList();
                     NextId = records.Count();
                     user = records.FirstOrDefault(user => user.Username == username);
                 }

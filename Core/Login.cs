@@ -13,6 +13,7 @@ namespace Utilities
 
         public bool Process()
         {
+            RequestUsernameAndPassword();
             return true;
         }
 
@@ -23,6 +24,19 @@ namespace Utilities
             currentUser.Username = Console.ReadLine();
             System.Console.WriteLine("Password: ");
             var password = Console.ReadLine();
+            var existingUser = _userRepository.GetUserByUsername(currentUser.Username);
+            if(existingUser != null)
+            {
+                var hashedPassword = Utils.HashPassword(existingUser.Salt, password);
+                if(hashedPassword == existingUser.HashedPassword)
+                {
+                    System.Console.WriteLine($"{currentUser.Username} logged in!");
+                }
+                else
+                {
+                    System.Console.WriteLine($"Wrong username or password");
+                }
+            }
         }
     }
 }

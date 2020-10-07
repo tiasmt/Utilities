@@ -22,6 +22,7 @@ namespace Utilities
         {
             var isInputValid = false;
             var newUser = new User();
+            byte[] salt = new byte[16];
             do
             {
                 Console.Clear();
@@ -31,7 +32,10 @@ namespace Utilities
                 var password = Console.ReadLine();
                 if(Validate(newUser))
                 {
-                    HashPassword(newUser, password);
+                    //Create the salt value with a cryptographic PRNG:
+                    new RNGCryptoServiceProvider().GetBytes(salt = new byte[16]);
+                    newUser.Salt = salt;
+                    newUser.HashedPassword = Utils.HashPassword(salt, password);
                     isInputValid = true;
                 }
                 
@@ -50,22 +54,6 @@ namespace Utilities
                 return false;
             }
             return true;
-        }
-
-        private User HashPassword(User user, string password)
-        {
-            //Create the salt value with a cryptographic PRNG:
-            new RNGCryptoServiceProvider().GetBytes(user.Salt = new byte[16]);
-            //Create the Rfc2898DeriveBytes and get the hash value:
-            var pbkdf2 = new Rfc2898DeriveBytes(password, user.Salt, 100000);
-            byte[] hash = pbkdf2.GetBytes(20);
-            //Combine the salt and password bytes for later use:
-            byte[] hashBytes = new byte[36];
-            Array.Copy(user.Salt, 0, hashBytes, 0, 16);
-            Array.Copy(hash, 0, hashBytes, 16, 20);
-            //Return combined salt+hash into a string for storage
-            user.HashedPassword = Convert.ToBase64String(hashBytes);
-            return user;
         }
     }
 }
